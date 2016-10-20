@@ -1,6 +1,8 @@
 package edu.albany.cs.scoreFuncs;
 
 import edu.albany.cs.base.ArrayIndexSort;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.stat.StatUtils;
 
@@ -155,8 +157,12 @@ public class EMSStat implements Function {
 		for (int i = 0; i < vectorRatioCB.length; i++) {
 			vectorRatioCB[i] = c[S.get(i)] / b[S.get(i)];
 		}
+		//System.out.println(ArrayUtils.toString(vectorRatioCB));
+		
 		ArrayIndexSort arrayIndexSort = new ArrayIndexSort(vectorRatioCB);
 		Integer[] indexes = arrayIndexSort.getIndices();
+		
+		System.out.println("Index: "+ArrayUtils.toString(indexes));
 		Arrays.sort(indexes, arrayIndexSort);
 		ArrayList<Integer> sortedS = new ArrayList<Integer>(); // v_1,v_2,...,v_m
 		for (int index : indexes) {
@@ -179,6 +185,7 @@ public class EMSStat implements Function {
 				argMaxX = x;
 			}
 		}
+		
 		result = argMaxX;
 		return result;
 	}

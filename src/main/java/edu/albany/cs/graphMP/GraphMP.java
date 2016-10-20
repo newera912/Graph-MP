@@ -1,11 +1,16 @@
 package edu.albany.cs.graphMP;
 
 import edu.albany.cs.base.Utils;
+import edu.albany.cs.graph.TransWeatherGraph;
+import edu.albany.cs.graph.TransWeatherRealGraph;
 import edu.albany.cs.headApprox.HeadApprox;
+import edu.albany.cs.scoreFuncs.EMSStat2;
+import edu.albany.cs.scoreFuncs.EMSStat;
 import edu.albany.cs.scoreFuncs.Function;
 import edu.albany.cs.tailApprox.TailApprox;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.stat.StatUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,7 +25,7 @@ public class GraphMP {
 
 	/** 1Xn dimension, input data */
 	private final double[] c;
-	private final int graphSize;
+	private final int numOfNodes;
 	/** graph info */
 	private final HashSet<Integer> nodes;
 	private final ArrayList<Integer[]> edges;
@@ -58,7 +63,7 @@ public class GraphMP {
 			nodes.add(edge[0]);
 			nodes.add(edge[1]);
 		}
-		this.graphSize = nodes.size();
+		this.numOfNodes = nodes.size();
 		this.edgeCosts = edgeCosts;
 		this.c = c;
 		this.s = s;
@@ -70,7 +75,45 @@ public class GraphMP {
 		/** run Graph-MP algorithm. */
 		x = run();
 	}
+	public GraphMP(TransWeatherGraph twGraph, int s, int g, double B, int t, Function func) {
+		numOfNodes = twGraph.numOfNodes;
+		edges = twGraph.edges;
+		edgeCosts = twGraph.edgeCosts;
+		trueSubGraph = twGraph.trueSubGraph;
+		this.nodes = new HashSet<>();
+		this.s = s;
+		this.g = g;
+		this.B = B;
+		this.t = t;
+		this.c = twGraph.x;
+		for (Integer[] edge : edges) {
+			nodes.add(edge[0]);
+			nodes.add(edge[1]);
+		}
 
+		this.function =(EMSStat)func;
+		x = run(); // run the algorithm
+	}
+	public GraphMP(TransWeatherRealGraph twGraph, int s, int g, double B, int t,Function func,double[] xx) {
+		numOfNodes = twGraph.numOfNodes;
+		edges = twGraph.edges;
+		edgeCosts = twGraph.edgeCosts;
+		trueSubGraph = twGraph.trueSubGraph;
+		this.nodes = new HashSet<>();
+	
+		this.s = s;
+		this.g = g;
+		this.B = B;
+		this.t = t;
+		this.c = xx;
+		for (Integer[] edge : edges) {
+			nodes.add(edge[0]);
+			nodes.add(edge[1]);
+		}
+
+		this.function =(EMSStat)func;
+		x = run(); // run the algorithm
+	}
 	private double[] run() {
 
 		long startTime = System.nanoTime();
@@ -119,8 +162,8 @@ public class GraphMP {
 	 * @return normGradient the normalized gradient
 	 */
 	private double[] normalizeGradient(double[] x, double[] gradient) {
-		double[] normalizedGradient = new double[graphSize];
-		for (int i = 0; i < graphSize; i++) {
+		double[] normalizedGradient = new double[numOfNodes];
+		for (int i = 0; i < numOfNodes; i++) {
 			if ((gradient[i] < 0.0D) && (x[i] == 0.0D)) {
 				normalizedGradient[i] = 0.0D;
 			} else if ((gradient[i] > 0.0D) && (x[i] == 1.0D)) {
@@ -135,12 +178,14 @@ public class GraphMP {
 	private double[] initializeRandom() {
 		double[] x0 = new double[c.length];
 		Random rand = new Random();
+		while(StatUtils.sum(x0)==0.0D){
 		for (int i = 0; i < c.length; i++) {
 			if (rand.nextDouble() < 0.5D) {
 				x0[i] = 1.0D;
 			} else {
 				x0[i] = 0.0D;
 			}
+		}
 		}
 		return x0;
 	}

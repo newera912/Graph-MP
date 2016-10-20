@@ -1,0 +1,2 @@
+[Score] [Station index] [Time slots] 
+20000.0 [5,7,9] [287]
