@@ -118,6 +118,7 @@ public class GraphMP {
 
 		long startTime = System.nanoTime();
 		double[] x = initializeRandom();
+		//System.out.println("initial X: "+ArrayUtils.toString(x));
 		ArrayList<Double> fValues = new ArrayList<>();
 		for (int i = 0; i < this.t; i++) { // t iterations
 			if (verboseLevel > 0) {
@@ -140,8 +141,8 @@ public class GraphMP {
 				x[j] = b[j];
 			}
 			if (verboseLevel > 0) {
-				System.out.println("number of head nodes : " + head.bestForest.nodesInF.size());
-				System.out.println("number of tail nodes : " + tail.bestForest.nodesInF.size());
+				System.out.println("number of head nodes : " + head.bestForest.nodesInF.size()+" "+ArrayUtils.toString(head.bestForest.nodesInF));
+				System.out.println("number of tail nodes : " + tail.bestForest.nodesInF.size()+" "+ArrayUtils.toString(tail.bestForest.nodesInF));
 			}
 			resultNodes_Tail = Utils.getIntArrayFromIntegerList(tail.bestForest.nodesInF);
 		}

@@ -160,9 +160,7 @@ public class EMSStat implements Function {
 		//System.out.println(ArrayUtils.toString(vectorRatioCB));
 		
 		ArrayIndexSort arrayIndexSort = new ArrayIndexSort(vectorRatioCB);
-		Integer[] indexes = arrayIndexSort.getIndices();
-		
-		System.out.println("Index: "+ArrayUtils.toString(indexes));
+		Integer[] indexes = arrayIndexSort.getIndices();		
 		Arrays.sort(indexes, arrayIndexSort);
 		ArrayList<Integer> sortedS = new ArrayList<Integer>(); // v_1,v_2,...,v_m
 		for (int index : indexes) {
